@@ -1,45 +1,39 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 import styles from './Searchbar.module.css';
 
-export class Searchbar extends Component {
-  static propTypes = {
-    onSubmit: PropTypes.func.isRequired,
+export const Searchbar = ({ onSubmit }) => {
+  const [search, setSearch] = useState('');
+
+  const handleSearchChange = event => {
+    setSearch(event.currentTarget.value.toLowerCase());
   };
-  state = {
-    search: '',
-  };
-  handleSearchChange = event => {
-    this.setState({ search: event.currentTarget.value.toLowerCase() });
-  };
-  handleSubmit = event => {
+
+  const handleSubmit = event => {
     event.preventDefault();
 
-    if (this.state.search.trim() === '') {
+    if (search.trim() === '') {
       return toast.error('заполните поле поиска');
     }
-    this.props.onSubmit(this.state.search);
-    this.setState({ search: '' });
+    onSubmit(search);
+    setSearch('');
   };
 
-  render() {
-    return (
-      <header className={styles.Searchbar}>
-        <form className={styles.SearchForm} onSubmit={this.handleSubmit}>
-          <button type="submit" className={styles.Button}></button>
-          <input
-            className={styles.Input}
-            type="text"
-            name="search"
-            autoComplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-            value={this.state.search}
-            onChange={this.handleSearchChange}
-          />
-        </form>
-      </header>
-    );
-  }
-}
+  return (
+    <header className={styles.Searchbar}>
+      <form className={styles.SearchForm} onSubmit={handleSubmit}>
+        <button type="submit" className={styles.Button}></button>
+        <input
+          className={styles.Input}
+          type="text"
+          name="search"
+          autoComplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+          value={search}
+          onChange={handleSearchChange}
+        />
+      </form>
+    </header>
+  );
+};
